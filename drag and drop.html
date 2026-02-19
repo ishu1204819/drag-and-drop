@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Drag & Drop File Uploader</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to right, #141e30, #243b55);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      color: white;
+    }
+
+    .upload-box {
+      border: 2px dashed #22c55e;
+      border-radius: 15px;
+      padding: 40px;
+      width: 350px;
+      text-align: center;
+      transition: 0.3s;
+      background: #1e293b;
+      cursor: pointer;
+    }
+
+    .upload-box.dragover {
+      background: #334155;
+      border-color: #16a34a;
+    }
+
+    input {
+      display: none;
+    }
+
+    img {
+      max-width: 100%;
+      margin-top: 15px;
+      border-radius: 10px;
+    }
+
+    .file-name {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #22c55e;
+    }
+  </style>
+</head>
+<body>
+
+<div class="upload-box" id="uploadBox">
+  <p>📂 Drag & Drop File Here</p>
+  <p>or Click to Upload</p>
+  <input type="file" id="fileInput">
+  <div class="file-name" id="fileName"></div>
+  <img id="preview" style="display:none;">
+</div>
+
+<script>
+
+const uploadBox = document.getElementById("uploadBox");
+const fileInput = document.getElementById("fileInput");
+const fileName = document.getElementById("fileName");
+const preview = document.getElementById("preview");
+
+// Click to open file
+uploadBox.addEventListener("click", () => {
+  fileInput.click();
+});
+
+// When file selected
+fileInput.addEventListener("change", (e) => {
+  handleFile(e.target.files[0]);
+});
+
+// Drag over effect
+uploadBox.addEventListener("dragover", (e) => {
+  e.preventDefault();
+  uploadBox.classList.add("dragover");
+});
+
+// Drag leave
+uploadBox.addEventListener("dragleave", () => {
+  uploadBox.classList.remove("dragover");
+});
+
+// Drop file
+uploadBox.addEventListener("drop", (e) => {
+  e.preventDefault();
+  uploadBox.classList.remove("dragover");
+  handleFile(e.dataTransfer.files[0]);
+});
+
+function handleFile(file) {
+  if (!file) return;
+
+  fileName.innerText = "File: " + file.name;
+
+  // Image preview
+  if (file.type.startsWith("image/")) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      preview.src = e.target.result;
+      preview.style.display = "block";
+    };
+    reader.readAsDataURL(file);
+  } else {
+    preview.style.display = "none";
+  }
+}
+
+</script>
+
+</body>
+</html>
